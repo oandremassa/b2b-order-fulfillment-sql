@@ -17,11 +17,11 @@ erDiagram
 
     CUSTOMER {
         int CustomerID PK
-        varchar CustomerNumber UK
+        varchar CustomerNumber
         nvarchar CustomerName
         varchar CustomerType
         varchar Industry
-        varchar Email UK
+        varchar Email
         char CountryCode
         nvarchar City
         date RegistrationDate
@@ -30,7 +30,7 @@ erDiagram
 
     PRODUCT_CATEGORY {
         int ProductCategoryID PK
-        nvarchar CategoryName UK
+        nvarchar CategoryName
         nvarchar Description
         bit IsActive
     }
@@ -38,7 +38,7 @@ erDiagram
     PRODUCT {
         int ProductID PK
         int ProductCategoryID FK
-        varchar SKU UK
+        varchar SKU
         nvarchar ProductName
         decimal StandardCost
         decimal ListPrice
@@ -48,7 +48,7 @@ erDiagram
 
     WAREHOUSE {
         int WarehouseID PK
-        varchar WarehouseCode UK
+        varchar WarehouseCode
         nvarchar WarehouseName
         nvarchar City
         char CountryCode
@@ -57,7 +57,7 @@ erDiagram
 
     SALES_ORDER {
         bigint OrderID PK
-        varchar OrderNumber UK
+        varchar OrderNumber
         int CustomerID FK
         int WarehouseID FK
         date OrderDate
@@ -82,8 +82,8 @@ erDiagram
 
     SHIPMENT {
         bigint ShipmentID PK
-        bigint OrderID FK_UK
-        varchar ShipmentNumber UK
+        bigint OrderID FK
+        varchar ShipmentNumber
         varchar ShipmentStatus
         date ShippedDate
         date DeliveredDate
@@ -114,8 +114,8 @@ erDiagram
     }
 
     STOCK_BALANCE {
-        int ProductID PK_FK
-        int WarehouseID PK_FK
+        int ProductID PK
+        int WarehouseID PK
         int QuantityOnHand
         datetime LastUpdated
     }
@@ -144,6 +144,7 @@ erDiagram
 - One customer can place many orders.
 - Each order is assigned to one fulfillment warehouse.
 - An order contains one or more order lines.
-- Each fulfilled order has at most one shipment in the current project scope.
+- Each fulfilled order has at most one shipment in the current scope.
 - A single order line can have zero or more return records.
 - Inventory is tracked by product and warehouse through movements and a current balance.
+- Unique constraints and composite foreign-key details are documented in the DDL and data dictionary.
