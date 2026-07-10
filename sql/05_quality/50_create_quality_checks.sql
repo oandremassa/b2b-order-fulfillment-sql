@@ -10,7 +10,7 @@ GO
 USE [$(DatabaseName)];
 GO
 
-CREATE PROCEDURE audit.usp_RunDataQualityChecks
+CREATE OR ALTER PROCEDURE audit.usp_RunDataQualityChecks
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -83,9 +83,14 @@ BEGIN
              N'Delivered date cannot precede shipped date.');
 
         SELECT @FailedRows = COUNT_BIG(*)
-        FROM sales.ProductReturn R
-        JOIN sales.SalesOrderItem OI ON OI.OrderItemID = R.OrderItemID
-        WHERE R.ReturnQuantity > OI.Quantity;
+        FROM
+        (
+            SELECT R.OrderItemID
+            FROM sales.ProductReturn R
+            JOIN sales.SalesOrderItem OI ON OI.OrderItemID = R.OrderItemID
+            GROUP BY R.OrderItemID, OI.Quantity
+            HAVING SUM(R.ReturnQuantity) > OI.Quantity
+        ) D;
 
         INSERT audit.DataQualityResult
             (RunID, CheckName, Severity, FailedRowCount, CheckStatus, Details)
@@ -96,7 +101,7 @@ BEGIN
 
         SELECT @FailedRows = COUNT_BIG(*)
         FROM inventory.StockBalance B
-        LEFT JOIN
+        FULL OUTER JOIN
         (
             SELECT ProductID, WarehouseID, SUM(QuantityChange) AS CalculatedQuantity
             FROM inventory.StockMovement
@@ -104,7 +109,7 @@ BEGIN
         ) M
           ON M.ProductID = B.ProductID
          AND M.WarehouseID = B.WarehouseID
-        WHERE B.QuantityOnHand <> COALESCE(M.CalculatedQuantity, 0);
+        WHERE COALESCE(B.QuantityOnHand, 0) <> COALESCE(M.CalculatedQuantity, 0);
 
         INSERT audit.DataQualityResult
             (RunID, CheckName, Severity, FailedRowCount, CheckStatus, Details)
