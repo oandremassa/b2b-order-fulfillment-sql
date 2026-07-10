@@ -1,0 +1,14 @@
+USE [$(DatabaseName)];
+GO
+
+CREATE SCHEMA sales AUTHORIZATION dbo;
+GO
+CREATE SCHEMA inventory AUTHORIZATION dbo;
+GO
+CREATE SCHEMA reporting AUTHORIZATION dbo;
+GO
+CREATE SCHEMA audit AUTHORIZATION dbo;
+GO
+
+PRINT 'Schemas created.';
+GO

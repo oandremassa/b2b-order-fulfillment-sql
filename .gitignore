@@ -1,0 +1,18 @@
+﻿# SQL Server local files
+*.mdf
+*.ldf
+*.bak
+*.trn
+
+# IDE and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local query exports
+outputs/*
+!outputs/.gitkeep
+
+# Personal study material
+local-notes/
