@@ -1,15 +1,14 @@
 # Execution guide
 
-## Prerequisites
+## Requirements
 
 - SQL Server 2019 or later
-- Windows Authentication enabled for your local user, or an equivalent SQL login
-- `sqlcmd` installed, or SQL Server Management Studio
-- Git for version control
+- Windows Authentication or a valid SQL login
+- `sqlcmd`, or SQL Server Management Studio with SQLCMD Mode
 
-## Option A: run with sqlcmd
+## Build with sqlcmd
 
-Open PowerShell in the repository root and execute:
+Open PowerShell in the repository root:
 
 ```powershell
 sqlcmd `
@@ -21,47 +20,32 @@ sqlcmd `
   -v DatabaseName="B2BOrderAnalytics"
 ```
 
-Parameter meaning:
+For a named instance, replace `localhost` with a value such as `localhost\SQLEXPRESS`.
 
-- `-S localhost`: SQL Server instance
-- `-E`: Windows Authentication
-- `-C`: trust the local server certificate
-- `-b`: return a failed process exit code when SQL Server reports an error
-- `-i`: input script
-- `-v`: SQLCMD variable used by the deployment scripts
+The command uses:
 
-For a named SQL Server instance, replace `localhost` with a value such as `localhost\SQLEXPRESS`.
+- `-E` for Windows Authentication
+- `-C` to trust the local certificate
+- `-b` to return a non-zero exit code when SQL Server reports an error
+- `-i` for the input script
+- `-v` for the SQLCMD database-name variable
 
-## Option B: run with SQL Server Management Studio
+`run_all.sql` drops and recreates the target database.
+
+## Build with SQL Server Management Studio
 
 1. Open `run_all.sql`.
-2. Select **Query > SQLCMD Mode**.
-3. Confirm that the working directory is the repository root.
+2. Enable **Query > SQLCMD Mode**.
+3. Set the working directory to the repository root.
 4. Execute the script.
 
-## Validate the installation
+## Expected result
 
-The build automatically executes `sql/07_tests/70_smoke_tests.sql`. A successful build ends with:
+The deployment runs the smoke tests automatically. A successful build ends with:
 
 ```text
 All smoke tests passed.
 Build completed successfully.
-```
-
-You can also inspect row counts:
-
-```sql
-USE B2BOrderAnalytics;
-
-SELECT 'Customers' AS ObjectName, COUNT(*) AS RowCount FROM sales.Customer
-UNION ALL
-SELECT 'Products', COUNT(*) FROM inventory.Product
-UNION ALL
-SELECT 'Orders', COUNT(*) FROM sales.SalesOrder
-UNION ALL
-SELECT 'Order Items', COUNT(*) FROM sales.SalesOrderItem
-UNION ALL
-SELECT 'Stock Movements', COUNT(*) FROM inventory.StockMovement;
 ```
 
 ## Run the analysis pack
@@ -78,9 +62,7 @@ sqlcmd `
   -s "|"
 ```
 
-## Profile the synthetic dataset
-
-Run the companion profile after the main analysis pack:
+## Run the dataset profile
 
 ```powershell
 sqlcmd `
@@ -94,9 +76,24 @@ sqlcmd `
   -s "|"
 ```
 
-The profile should show a repeat-customer rate near 75%, visible differences between customer tiers and sales channels, and concentrated demand among the most popular products.
+## Save local output
 
-## Demonstrate a stored procedure
+```powershell
+sqlcmd `
+  -S localhost `
+  -d B2BOrderAnalytics `
+  -E `
+  -C `
+  -b `
+  -i ".\sql\06_analysis\60_business_questions.sql" `
+  -o ".\outputs\business_analysis.txt" `
+  -W `
+  -s "|"
+```
+
+Files created under `outputs/` are ignored by Git by default.
+
+## Stored procedure examples
 
 ```sql
 EXEC reporting.usp_GetSalesPerformance
@@ -110,9 +107,9 @@ EXEC reporting.usp_GetCustomerOrderHistory
     @CustomerID = 25;
 ```
 
-## Demonstrate a controlled stock adjustment
+## Stock adjustment example
 
-Run the following inside a test database only:
+Run against the generated database only:
 
 ```sql
 EXEC inventory.usp_AdjustStock
@@ -122,7 +119,7 @@ EXEC inventory.usp_AdjustStock
     @Reason = N'Cycle count correction';
 ```
 
-The procedure writes an inventory movement and updates the current balance in one transaction.
+The procedure inserts a stock movement and updates the current balance in the same transaction.
 
 ## Run data quality checks manually
 
@@ -138,21 +135,3 @@ FROM audit.DataQualityResult
 WHERE RunID = (SELECT MAX(RunID) FROM audit.DataQualityRun)
 ORDER BY ResultID;
 ```
-
-## Initialise Git
-
-```powershell
-git init
-git add .
-git commit -m "Build SQL Server order fulfillment analytics project"
-```
-
-Create an empty GitHub repository and then follow GitHub's commands to add the remote and push the `main` branch.
-
-## Recommended evidence before publishing
-
-1. Execute the full build locally.
-2. Export the results of queries 1, 4, and 6 as CSV files.
-3. Add one ERD screenshot or use the Mermaid diagram already included.
-4. Add a screenshot showing that all smoke tests passed.
-5. Review every script until you can explain the purpose of each section.

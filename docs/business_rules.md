@@ -84,4 +84,4 @@ The automated quality procedure checks:
 7. Return probability varies by product category and late-delivery status.
 8. Refund amount is recognised only for approved or received returns.
 
-See `docs/synthetic_data_design.md` for the complete rationale.
+See `docs/data_generation.md` for the complete rationale.

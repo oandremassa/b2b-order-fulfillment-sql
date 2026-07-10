@@ -1,75 +1,69 @@
-# Synthetic Data Design
+# Data generation
 
-The dataset is deterministic: rebuilding the database produces the same logical records and the same analytical results. This makes testing, documentation, and interview demonstrations reproducible.
+The seed scripts create a deterministic dataset: rebuilding the database produces the same records and analytical results.
 
-The generator is not intended to simulate every detail of a real distributor. It creates a controlled B2B scenario with enough variation to support meaningful SQL analysis.
+The objective is not to reproduce every detail of a distribution business. The rules create enough variation to test joins, aggregations, reporting logic and operational controls without relying on an external data generator.
 
-## Customer portfolio
+## Customers
 
-The 400 customers are divided into three commercial tiers:
+The 400 customers are grouped into three commercial types:
 
-| Customer range | Type | Intended behaviour |
+| Customer range | Type | Order pattern |
 |---|---|---|
-| 1-40 | Enterprise | Small strategic group with high repeat demand and larger orders |
-| 41-150 | MidMarket | Regular accounts with moderate-to-high purchasing frequency |
-| 151-400 | SMB | Larger population with smaller and less frequent orders |
+| 1-40 | Enterprise | Frequent orders with more lines and larger quantities |
+| 41-150 | MidMarket | Regular orders with moderate size |
+| 151-400 | SMB | Smaller and less frequent orders |
 
-Customers 1-320 receive at least one order. Customers 1-240 form the repeat-purchase base. The remaining customers represent one-time buyers, prospects, or inactive accounts.
+Customers 1-320 place at least one order. Customers 1-240 receive repeat demand, while the remaining accounts represent one-time buyers or customers without an order in the generated period.
 
-This produces a repeat-customer rate close to 75%, rather than assigning the same number of orders to every customer.
+After the first order is assigned, additional demand follows a long-tail distribution:
 
-## Repeat-demand weighting
+- 35% to the first 40 accounts
+- 40% to accounts 41-140
+- 25% to accounts 141-240
 
-After the first order is assigned to each purchasing customer, additional orders are distributed with a long-tail pattern:
+## Sales channels and discounts
 
-- 35% to the first 40 strategic accounts;
-- 40% to customers 41-140;
-- 25% to customers 141-240.
+Channel selection depends on customer type:
 
-The rule is intentionally readable T-SQL. It demonstrates business-oriented synthetic data design without requiring an external data-generation framework.
+- Enterprise accounts mainly use sales representatives and partners.
+- Mid-market accounts use all three channels.
+- SMB accounts primarily order online.
 
-## Sales channels
-
-Channel assignment depends on customer type:
-
-- Enterprise customers primarily use sales representatives and partners.
-- Mid-market customers use a mixed channel model.
-- SMB customers primarily order online.
-
-Discounts also depend on the channel. Partner orders normally receive the highest discounts, sales-representative orders receive negotiated discounts, and online orders have fewer discounts. This creates visible differences in average order value and gross-margin rate.
+Partner orders receive larger discounts on average. Sales-representative orders use negotiated discounts, while online orders generally receive lower discounts.
 
 ## Products and quantities
 
-Product demand follows a simple popularity distribution:
+Product selection uses three popularity bands:
 
-- approximately 45% of order lines select from the first 15 products;
-- approximately 35% select from the next 30 products;
-- approximately 20% select from the remaining 45 products.
+- about 45% of order lines use the first 15 products;
+- about 35% use the next 30 products;
+- about 20% use the remaining 45 products.
 
-Order quantity and line count depend on customer type. Enterprise orders are larger and contain more lines than SMB orders.
+Order line count and quantity also vary by customer type, so enterprise orders are normally larger than SMB orders.
 
 ## Warehouses
 
-Warehouse assignment follows a basic geographic rule:
+Warehouse assignment uses a simplified geographic rule:
 
 - Hamburg and Amsterdam customers are served from Hamburg;
 - Berlin and Leipzig customers are served from Leipzig;
 - other locations are served from Mannheim.
 
-The model is deliberately simplified, but it provides a defensible reason for warehouse-level performance analysis.
+## Shipments and returns
 
-## Returns
+Delivered dates are generated from the shipment date and warehouse service pattern. Return probability varies by product category and increases for late deliveries.
 
-Return probability varies by product category and increases when a delivery is late. Most returns contain one unit. Refunds are recorded only after the return is approved or received.
+Most returns contain one unit. Refund amounts are only recorded after a return is approved or received.
 
 ## Validation
 
-The file `sql/06_analysis/61_dataset_profile.sql` profiles:
+`sql/06_analysis/61_dataset_profile.sql` reports:
 
-- purchasing, one-time, repeat, and non-purchasing customers;
+- purchasing, one-time, repeat and non-purchasing customers;
 - order share by customer type;
 - sales-channel mix;
-- concentration among the most popular products;
-- minimum, average, and maximum orders by customer type.
+- demand concentration among popular products;
+- minimum, average and maximum order counts by customer type.
 
-Smoke tests also verify that customer participation and repeat behaviour remain inside expected ranges.
+The smoke tests also check that customer participation and repeat-order behaviour remain within the expected ranges.
