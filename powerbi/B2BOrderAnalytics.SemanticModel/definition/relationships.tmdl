@@ -1,0 +1,93 @@
+relationship 'FactOrder - Order Date'
+	fromColumn: FactOrder.OrderDateKey
+	toColumn: DimDate.DateKey
+
+relationship 'FactOrder - Required Date'
+	isActive: false
+	fromColumn: FactOrder.RequiredDeliveryDateKey
+	toColumn: DimDate.DateKey
+
+relationship 'FactOrder - Shipped Date'
+	isActive: false
+	fromColumn: FactOrder.ShippedDateKey
+	toColumn: DimDate.DateKey
+
+relationship 'FactOrder - Delivered Date'
+	isActive: false
+	fromColumn: FactOrder.DeliveredDateKey
+	toColumn: DimDate.DateKey
+
+relationship 'FactOrder - Customer'
+	fromColumn: FactOrder.CustomerKey
+	toColumn: DimCustomer.CustomerKey
+
+relationship 'FactOrder - Warehouse'
+	fromColumn: FactOrder.WarehouseKey
+	toColumn: DimWarehouse.WarehouseKey
+
+relationship 'FactOrder - Sales Channel'
+	fromColumn: FactOrder.SalesChannelKey
+	toColumn: DimSalesChannel.SalesChannelKey
+
+relationship 'FactSalesLine - Order Date'
+	fromColumn: FactSalesLine.OrderDateKey
+	toColumn: DimDate.DateKey
+
+relationship 'FactSalesLine - Customer'
+	fromColumn: FactSalesLine.CustomerKey
+	toColumn: DimCustomer.CustomerKey
+
+relationship 'FactSalesLine - Product'
+	fromColumn: FactSalesLine.ProductKey
+	toColumn: DimProduct.ProductKey
+
+relationship 'FactSalesLine - Warehouse'
+	fromColumn: FactSalesLine.WarehouseKey
+	toColumn: DimWarehouse.WarehouseKey
+
+relationship 'FactSalesLine - Sales Channel'
+	fromColumn: FactSalesLine.SalesChannelKey
+	toColumn: DimSalesChannel.SalesChannelKey
+
+relationship 'FactReturn - Return Date'
+	isActive: false
+	fromColumn: FactReturn.ReturnDateKey
+	toColumn: DimDate.DateKey
+
+relationship 'FactReturn - Order Date'
+	fromColumn: FactReturn.OrderDateKey
+	toColumn: DimDate.DateKey
+
+relationship 'FactReturn - Customer'
+	fromColumn: FactReturn.CustomerKey
+	toColumn: DimCustomer.CustomerKey
+
+relationship 'FactReturn - Product'
+	fromColumn: FactReturn.ProductKey
+	toColumn: DimProduct.ProductKey
+
+relationship 'FactReturn - Warehouse'
+	fromColumn: FactReturn.WarehouseKey
+	toColumn: DimWarehouse.WarehouseKey
+
+relationship 'FactReturn - Sales Channel'
+	fromColumn: FactReturn.SalesChannelKey
+	toColumn: DimSalesChannel.SalesChannelKey
+
+relationship 'FactInventorySnapshot - Snapshot Date'
+	fromColumn: FactInventorySnapshot.SnapshotDateKey
+	toColumn: DimDate.DateKey
+
+relationship 'FactInventorySnapshot - Product'
+	fromColumn: FactInventorySnapshot.ProductKey
+	toColumn: DimProduct.ProductKey
+
+relationship 'FactInventorySnapshot - Warehouse'
+	fromColumn: FactInventorySnapshot.WarehouseKey
+	toColumn: DimWarehouse.WarehouseKey
+
+relationship 15da7594-3992-42a5-a1a3-0ab1a7108a74
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DimCustomer.RegistrationDate
+	toColumn: LocalDateTable_0f06dc3d-efb5-4ac4-971e-64be5ae5c191.Date
+

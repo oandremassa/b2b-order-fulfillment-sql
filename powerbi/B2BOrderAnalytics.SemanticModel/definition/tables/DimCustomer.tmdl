@@ -1,0 +1,86 @@
+table DimCustomer
+	lineageTag: e2611fea-10d9-49b1-9f3a-f43ac2d7cd74
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0815d11b-d8ca-4a57-9320-639b223d4c80
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+	column SourceCustomerID
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4bfa2a52-4dec-49f0-9ad7-8e21aaa751dd
+		summarizeBy: count
+		sourceColumn: SourceCustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerNumber
+		dataType: string
+		lineageTag: 4a6f13b1-df27-412d-a5ae-9acc521e1a5b
+		summarizeBy: none
+		sourceColumn: CustomerNumber
+
+	column CustomerName
+		dataType: string
+		lineageTag: e00052ac-5e4d-40ff-8422-950fc32ddc1d
+		summarizeBy: none
+		sourceColumn: CustomerName
+
+	column CustomerType
+		dataType: string
+		lineageTag: 3019bb4f-a415-4774-be3f-d8ee1a4fc004
+		summarizeBy: none
+		sourceColumn: CustomerType
+
+	column Industry
+		dataType: string
+		lineageTag: 57ca40d6-7d28-48f5-974c-9a93d2b2fd0e
+		summarizeBy: none
+		sourceColumn: Industry
+
+	column CountryCode
+		dataType: string
+		lineageTag: cc4aec30-4530-4a4e-8167-258712d15122
+		summarizeBy: none
+		sourceColumn: CountryCode
+
+	column City
+		dataType: string
+		lineageTag: 619d418f-08cc-487e-b5bd-d18e9442fa5d
+		summarizeBy: none
+		sourceColumn: City
+
+	column RegistrationDate
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: b2697e29-bde9-41a8-963c-74f8ddec88a6
+		summarizeBy: none
+		sourceColumn: RegistrationDate
+
+		variation Variation
+			isDefault
+			relationship: 15da7594-3992-42a5-a1a3-0ab1a7108a74
+			defaultHierarchy: LocalDateTable_0f06dc3d-efb5-4ac4-971e-64be5ae5c191.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column IsActive
+		dataType: boolean
+		lineageTag: 67e0279e-c02f-4d57-8250-6a4f51713db5
+		summarizeBy: none
+		sourceColumn: IsActive
+
+	partition DimCustomer = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database("localhost", "B2BOrderAnalytics", [CreateNavigationProperties=false]),
+					Data = Source{[Schema="mart", Item="DimCustomer"]}[Data]
+				in
+					Data
+

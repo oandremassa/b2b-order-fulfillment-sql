@@ -1,0 +1,116 @@
+table FactReturn
+	lineageTag: 033f8b9d-7a5e-4619-8be9-0141e9eef180
+
+	column ReturnKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 770ece66-bba7-4431-9adb-e3e15ebdeeef
+		summarizeBy: none
+		sourceColumn: ReturnKey
+
+	column OrderKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 56cacde4-e441-4957-9617-a39415d6edba
+		summarizeBy: none
+		sourceColumn: OrderKey
+
+	column OrderItemKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f4fd5099-2df0-49f6-8367-d4910734c990
+		summarizeBy: none
+		sourceColumn: OrderItemKey
+
+	column ReturnDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: cabd7f4e-b981-45df-8c35-2a05c1d75cdd
+		summarizeBy: none
+		sourceColumn: ReturnDateKey
+
+	column OrderDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c6175a00-4c54-4218-98c3-300fc67c93e0
+		summarizeBy: none
+		sourceColumn: OrderDateKey
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 3b04fc60-f324-45c4-9777-49acb909ccf3
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+	column ProductKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 73ccafa9-0bb6-49e5-b05d-1c6a42fe5068
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+	column WarehouseKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0ce128ba-ad66-49e5-bbd3-7909a8f58922
+		summarizeBy: none
+		sourceColumn: WarehouseKey
+
+	column SalesChannelKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 9bcc59d9-dc6b-40a3-a65d-1d2dcc3a8c55
+		summarizeBy: none
+		sourceColumn: SalesChannelKey
+
+	column ReturnStatus
+		dataType: string
+		lineageTag: 402a86f4-672e-4a2c-a502-ba64d12de0c9
+		summarizeBy: none
+		sourceColumn: ReturnStatus
+
+	column ReturnReason
+		dataType: string
+		lineageTag: e53ee49e-03db-458e-93f3-d918c04a6bcd
+		summarizeBy: none
+		sourceColumn: ReturnReason
+
+	column ReturnQuantity
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 5e311778-e816-4b5e-93ab-8ddf8f65c28a
+		summarizeBy: sum
+		sourceColumn: ReturnQuantity
+
+	column RefundAmount
+		dataType: double
+		formatString: € #,##0.00
+		lineageTag: 0dec9ccb-79ba-45ab-aca7-07874c6f60b3
+		summarizeBy: sum
+		sourceColumn: RefundAmount
+
+	column IsAcceptedReturn
+		dataType: boolean
+		lineageTag: f3ba2571-c704-4ab9-abd3-a7f6c678c1e6
+		summarizeBy: none
+		sourceColumn: IsAcceptedReturn
+
+	partition FactReturn = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database("localhost", "B2BOrderAnalytics", [CreateNavigationProperties=false]),
+					Data = Source{[Schema="mart", Item="FactReturn"]}[Data]
+				in
+					Data
+

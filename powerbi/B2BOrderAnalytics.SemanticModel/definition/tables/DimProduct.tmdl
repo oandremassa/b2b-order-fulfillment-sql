@@ -1,0 +1,77 @@
+table DimProduct
+	lineageTag: fc3c91d7-b5a4-434e-98cc-66351c790d36
+
+	column ProductKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 6eadf3bb-43bd-461b-8f30-58d89cc176cb
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+	column SourceProductID
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: a8608c27-bfd8-4a79-8ac6-40662f76261b
+		summarizeBy: none
+		sourceColumn: SourceProductID
+
+	column SKU
+		dataType: string
+		lineageTag: 403fd829-9c5a-44df-b9f0-f902106eb127
+		summarizeBy: none
+		sourceColumn: SKU
+
+	column ProductName
+		dataType: string
+		lineageTag: f2582c56-ceb5-40de-a2d0-bd3ce7f5e472
+		summarizeBy: none
+		sourceColumn: ProductName
+
+	column CategoryName
+		dataType: string
+		lineageTag: d90ab48c-766c-4858-a263-c252468b9bad
+		summarizeBy: none
+		sourceColumn: CategoryName
+
+	column StandardCost
+		dataType: double
+		formatString: € #,##0.00
+		lineageTag: cb52219f-f037-4fdd-920b-e2b8b75c0e77
+		summarizeBy: sum
+		sourceColumn: StandardCost
+
+		annotation SummarizationSetBy = Automatic
+
+	column ListPrice
+		dataType: double
+		formatString: € #,##0.00
+		lineageTag: 022f7171-7843-4e57-8fe2-6d0e90851c8c
+		summarizeBy: sum
+		sourceColumn: ListPrice
+
+		annotation SummarizationSetBy = Automatic
+
+	column ReorderLevel
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 0d8b329c-b34b-46bd-bd0c-eb1e7a86a900
+		summarizeBy: sum
+		sourceColumn: ReorderLevel
+
+	column IsActive
+		dataType: boolean
+		lineageTag: ec81c9f5-01cb-4cb3-9259-f522bd5e6df7
+		summarizeBy: none
+		sourceColumn: IsActive
+
+	partition DimProduct = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database("localhost", "B2BOrderAnalytics", [CreateNavigationProperties=false]),
+					Data = Source{[Schema="mart", Item="DimProduct"]}[Data]
+				in
+					Data
+

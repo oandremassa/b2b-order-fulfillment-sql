@@ -1,0 +1,89 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY24SU11",
+      "reportVersionAtImport": {
+        "visual": "2.6.0",
+        "report": "3.1.0",
+        "page": "2.3.0"
+      },
+      "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "B2BLight-7f3a2d.json",
+      "reportVersionAtImport": {
+        "visual": "2.6.0",
+        "report": "3.1.0",
+        "page": "2.3.0"
+      },
+      "type": "RegisteredResources"
+    }
+  },
+  "objects": {
+    "outspacePane": [
+      {
+        "properties": {
+          "visible": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          },
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "CY24SU11",
+          "path": "BaseThemes/CY24SU11.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "B2BLight-7f3a2d.json",
+          "path": "B2BLight-7f3a2d.json",
+          "type": "CustomTheme"
+        },
+        {
+          "name": "OrderFlow-overview-bg.svg",
+          "path": "OrderFlow-overview-bg.svg",
+          "type": "Image"
+        },
+        {
+          "name": "OrderFlow-fulfillment-bg.svg",
+          "path": "OrderFlow-fulfillment-bg.svg",
+          "type": "Image"
+        },
+        {
+          "name": "OrderFlow-inventory-bg.svg",
+          "path": "OrderFlow-inventory-bg.svg",
+          "type": "Image"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "useEnhancedTooltips": true
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "B2BOrderAnalytics"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "0d43aaf3-0e93-47f0-a227-8ef013ca77be"
+  }
+}

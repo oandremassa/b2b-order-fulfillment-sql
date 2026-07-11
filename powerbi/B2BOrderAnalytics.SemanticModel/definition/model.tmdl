@@ -1,0 +1,28 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["DimDate","DimCustomer","DimProduct","DimWarehouse","DimSalesChannel","FactOrder","FactSalesLine","FactReturn","FactInventorySnapshot"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table DimDate
+ref table DimCustomer
+ref table DimProduct
+ref table DimWarehouse
+ref table DimSalesChannel
+ref table FactOrder
+ref table FactSalesLine
+ref table FactReturn
+ref table FactInventorySnapshot
+ref table Metrics
+ref table DateTableTemplate_e1b00a65-d971-4801-b16f-f5480ec2ac3d
+ref table LocalDateTable_0f06dc3d-efb5-4ac4-971e-64be5ae5c191
+

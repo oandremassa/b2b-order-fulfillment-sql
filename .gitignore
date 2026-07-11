@@ -16,3 +16,8 @@ outputs/*
 
 # Personal study material
 local-notes/
+
+# Power BI local cache
+**/.pbi/
+*.pbix
+*.pbit

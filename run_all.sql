@@ -29,6 +29,9 @@ PRINT '============================================================';
 :r .\sql\04_procedures\40_create_reporting_procedures.sql
 :r .\sql\04_procedures\41_create_inventory_procedure.sql
 :r .\sql\05_quality\50_create_quality_checks.sql
+:r .\sql\08_mart\80_create_mart.sql
+:r .\sql\08_mart\81_load_mart.sql
+:r .\sql\08_mart\82_validate_mart.sql
 :r .\sql\07_tests\70_smoke_tests.sql
 
 PRINT '============================================================';

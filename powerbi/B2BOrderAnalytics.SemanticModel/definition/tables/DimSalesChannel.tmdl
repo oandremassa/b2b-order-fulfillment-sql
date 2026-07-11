@@ -1,0 +1,26 @@
+table DimSalesChannel
+	lineageTag: 349c982c-58a2-4690-9be9-78bc1ff3cb85
+
+	column SalesChannelKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 55050830-902d-4f70-b542-50a2d59cec9a
+		summarizeBy: none
+		sourceColumn: SalesChannelKey
+
+	column SalesChannel
+		dataType: string
+		lineageTag: 5019b9a9-3b15-4641-a222-9c613b37bd9c
+		summarizeBy: none
+		sourceColumn: SalesChannel
+
+	partition DimSalesChannel = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database("localhost", "B2BOrderAnalytics", [CreateNavigationProperties=false]),
+					Data = Source{[Schema="mart", Item="DimSalesChannel"]}[Data]
+				in
+					Data
+

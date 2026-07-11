@@ -1,0 +1,151 @@
+table FactSalesLine
+	lineageTag: f53b0f13-4b42-4345-8cdb-cfcdc712d9ad
+
+	column OrderItemKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 76b25dad-df1f-46e8-a45c-17bda3790198
+		summarizeBy: none
+		sourceColumn: OrderItemKey
+
+	column OrderKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 00ed267c-76b0-4603-82f2-c2d8524ff5a5
+		summarizeBy: none
+		sourceColumn: OrderKey
+
+	column OrderNumber
+		dataType: string
+		lineageTag: 23640bca-dfe3-4faa-8b8c-be881d22f0a2
+		summarizeBy: none
+		sourceColumn: OrderNumber
+
+	column LineNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: 2c917d9b-7038-4275-95d3-9f04a00a1364
+		summarizeBy: none
+		sourceColumn: LineNumber
+
+	column OrderDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 975d851e-38db-4c69-8c6e-1b62bf4cc262
+		summarizeBy: none
+		sourceColumn: OrderDateKey
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 714b1aab-acd1-428d-a9ef-5e1bbe276376
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+	column ProductKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4554dd62-398f-462d-bdd6-57d33520dee3
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+	column WarehouseKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7c8bd715-aaa6-4dfe-bca3-da5384b2ef59
+		summarizeBy: none
+		sourceColumn: WarehouseKey
+
+	column SalesChannelKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b18b7c9d-6846-478c-a5e3-6dad44a70957
+		summarizeBy: none
+		sourceColumn: SalesChannelKey
+
+	column OrderStatus
+		dataType: string
+		lineageTag: 267120ec-eee3-4dcd-83b2-2f58a0a23972
+		summarizeBy: none
+		sourceColumn: OrderStatus
+
+	column Quantity
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 0570f897-a4a4-4053-acde-ffe2711a41a5
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+	column UnitPrice
+		dataType: double
+		formatString: € #,##0.00
+		lineageTag: 98db5788-6532-42bc-bafc-97fa67339d21
+		summarizeBy: sum
+		sourceColumn: UnitPrice
+
+	column DiscountRate
+		dataType: double
+		formatString: 0.00%
+		lineageTag: 7db4e20e-fb91-4986-8d4f-5ae2eb79f232
+		summarizeBy: sum
+		sourceColumn: DiscountRate
+
+		annotation SummarizationSetBy = Automatic
+
+	column UnitCost
+		dataType: double
+		formatString: € #,##0.00
+		lineageTag: e80790c9-f9fc-4175-9af4-bcabcc7f0328
+		summarizeBy: sum
+		sourceColumn: UnitCost
+
+	column GrossSalesAmount
+		dataType: double
+		formatString: € #,##0.00
+		lineageTag: e8603199-7d2e-4ba7-bf25-8da82a0d0e74
+		summarizeBy: sum
+		sourceColumn: GrossSalesAmount
+
+	column NetSalesAmount
+		dataType: double
+		formatString: € #,##0.00
+		lineageTag: 05b1d9dd-3864-410c-b6f8-c7191d8c2279
+		summarizeBy: sum
+		sourceColumn: NetSalesAmount
+
+	column CostAmount
+		dataType: double
+		formatString: € #,##0.00
+		lineageTag: 9fb6b9bc-9dae-40a6-b069-9a4545c0bab2
+		summarizeBy: sum
+		sourceColumn: CostAmount
+
+	column GrossMarginAmount
+		dataType: double
+		formatString: € #,##0.00
+		lineageTag: 59ce8fc1-b17f-41fd-96b2-64dd12698dbe
+		summarizeBy: sum
+		sourceColumn: GrossMarginAmount
+
+	column IsCompleted
+		dataType: boolean
+		lineageTag: 8edcda89-68a8-4a96-9340-7fec29913bbe
+		summarizeBy: none
+		sourceColumn: IsCompleted
+
+	partition FactSalesLine = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database("localhost", "B2BOrderAnalytics", [CreateNavigationProperties=false]),
+					Data = Source{[Schema="mart", Item="FactSalesLine"]}[Data]
+				in
+					Data
+

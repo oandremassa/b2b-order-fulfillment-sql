@@ -1,0 +1,169 @@
+table FactOrder
+	lineageTag: f0133ce3-bf3f-44a1-91e6-53e0864153e5
+
+	column OrderKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b14519ca-015c-4d57-b652-dff9518dff16
+		summarizeBy: none
+		sourceColumn: OrderKey
+
+	column OrderNumber
+		dataType: string
+		lineageTag: 40aa127a-1277-4c69-a798-b478d5c49312
+		summarizeBy: none
+		sourceColumn: OrderNumber
+
+	column OrderDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 40108131-8e3d-4a64-96ab-c8e6b58bd158
+		summarizeBy: none
+		sourceColumn: OrderDateKey
+
+	column RequiredDeliveryDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 21962a0e-f29d-4fa2-a4f8-069784f35945
+		summarizeBy: none
+		sourceColumn: RequiredDeliveryDateKey
+
+	column ShippedDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8e96056d-c54e-49eb-8548-e2e1693642c8
+		summarizeBy: none
+		sourceColumn: ShippedDateKey
+
+	column DeliveredDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ba8dc969-f47a-4530-b683-bca91a4c9eee
+		summarizeBy: none
+		sourceColumn: DeliveredDateKey
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: e74878b2-9d4f-4694-9a5a-c161834beec6
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+	column WarehouseKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 380f3130-7b8d-442c-86bd-7e3e89b2919c
+		summarizeBy: none
+		sourceColumn: WarehouseKey
+
+	column SalesChannelKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: be6b583c-04dd-4759-9525-5ad91b3ceb3f
+		summarizeBy: none
+		sourceColumn: SalesChannelKey
+
+	column OrderStatus
+		dataType: string
+		lineageTag: c2789e5e-2e88-4828-9327-ed83900c2638
+		summarizeBy: none
+		sourceColumn: OrderStatus
+
+	column ShipmentStatus
+		dataType: string
+		lineageTag: 2ca9643a-2d6a-4c5e-bc66-ccd7c577c60d
+		summarizeBy: none
+		sourceColumn: ShipmentStatus
+
+	column Carrier
+		dataType: string
+		lineageTag: 612cd0b6-db4e-48f9-825b-4093e93939c7
+		summarizeBy: none
+		sourceColumn: Carrier
+
+	column PaymentTermsDays
+		dataType: int64
+		formatString: 0
+		lineageTag: 166b484c-13e4-4753-a75e-ffa2d66db539
+		summarizeBy: none
+		sourceColumn: PaymentTermsDays
+
+	column LineCount
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 28369fce-b90f-4044-b5e1-2614ebc9c09c
+		summarizeBy: sum
+		sourceColumn: LineCount
+
+	column TotalQuantity
+		dataType: int64
+		formatString: #,##0
+		lineageTag: d338ca34-87b2-49cd-9cc8-7be1f8fef026
+		summarizeBy: sum
+		sourceColumn: TotalQuantity
+
+	column GrossOrderValue
+		dataType: double
+		formatString: € #,##0.00
+		lineageTag: 5f0b0b7f-929f-4da6-8e07-5f6c40acb2fb
+		summarizeBy: sum
+		sourceColumn: GrossOrderValue
+
+	column NetOrderValue
+		dataType: double
+		formatString: € #,##0.00
+		lineageTag: 8363f1f8-068e-4723-bdb7-438fdb21bcec
+		summarizeBy: sum
+		sourceColumn: NetOrderValue
+
+	column CostAmount
+		dataType: double
+		formatString: € #,##0.00
+		lineageTag: 0c580beb-22ed-41e5-9e64-ec1595cc3eb7
+		summarizeBy: sum
+		sourceColumn: CostAmount
+
+	column GrossMarginAmount
+		dataType: double
+		formatString: € #,##0.00
+		lineageTag: 70d65836-798f-494b-b1e9-434c42d5aae9
+		summarizeBy: sum
+		sourceColumn: GrossMarginAmount
+
+	column ShippingCost
+		dataType: double
+		formatString: € #,##0.00
+		lineageTag: cd787041-fdac-4c59-a122-27c2e8b24277
+		summarizeBy: sum
+		sourceColumn: ShippingCost
+
+	column DeliveryDays
+		dataType: int64
+		formatString: 0.00
+		lineageTag: 4a11c001-73c9-4f9d-9b00-f17e146f4483
+		summarizeBy: average
+		sourceColumn: DeliveryDays
+
+	column IsOnTimeDelivery
+		dataType: boolean
+		lineageTag: e2b13e9e-81b8-4aca-ab55-7a46517b7eb0
+		summarizeBy: none
+		sourceColumn: IsOnTimeDelivery
+
+	partition FactOrder = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database("localhost", "B2BOrderAnalytics", [CreateNavigationProperties=false]),
+					Data = Source{[Schema="mart", Item="FactOrder"]}[Data]
+				in
+					Data
+

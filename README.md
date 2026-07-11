@@ -156,3 +156,21 @@ See [results.md](docs/results.md) for the supporting figures.
 ## Licence
 
 MIT Licence.
+
+## Power BI report
+
+The `powerbi/` directory contains a Power BI Project connected to the dimensional reporting layer in the `mart` schema.
+
+The report is organised into three pages:
+
+- `Executive Overview` - revenue, customer mix, channel economics, fulfillment and inventory alerts
+- `Fulfillment & Returns` - delivery reliability, warehouse performance, carriers and return drivers
+- `Inventory & Products` - stock health, product demand and replenishment priorities
+
+Open the project after rebuilding the database:
+
+```text
+powerbi/B2BOrderAnalytics.pbip
+```
+
+The report connects to `localhost` and the `B2BOrderAnalytics` database using Windows authentication.

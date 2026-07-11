@@ -1,0 +1,203 @@
+table Metrics
+	lineageTag: 95f2900d-9dcc-4b4f-a2b4-b9c9d7eb6a53
+
+	/// Revenue from completed sales lines.
+	measure 'Net Revenue' = CALCULATE(SUM(FactSalesLine[NetSalesAmount]), FactSalesLine[IsCompleted] = TRUE())
+		formatString: € #,##0.00
+		displayFolder: Sales
+		lineageTag: 701b1432-229f-4677-838d-dd38f326c078
+
+	/// Net revenue displayed in millions for report visuals.
+	measure 'Net Revenue M' = DIVIDE([Net Revenue], 1000000)
+		formatString: €0.00M
+		displayFolder: Display
+		lineageTag: 7a8b5054-0b3b-425e-adbd-87963b2b4a45
+
+	/// Completed orders displayed in thousands for the KPI card.
+	measure 'Completed Orders K' = DIVIDE([Completed Orders], 1000)
+		formatString: 0.00K
+		displayFolder: Display
+		lineageTag: f4857219-afa1-40f3-a927-a8d2efa1efea
+
+	/// Average order value displayed in thousands for the KPI card.
+	measure 'Average Order Value K' = DIVIDE([Average Order Value], 1000)
+		formatString: €0.00K
+		displayFolder: Display
+		lineageTag: 6784861c-cfae-4401-9476-a0c8cd4ca536
+
+	/// Gross margin from completed sales lines.
+	measure 'Gross Margin' = CALCULATE(SUM(FactSalesLine[GrossMarginAmount]), FactSalesLine[IsCompleted] = TRUE())
+		formatString: € #,##0.00
+		displayFolder: Sales
+		lineageTag: aba222fc-cd31-4591-9d86-8b1703ceec1b
+
+	/// Gross margin divided by net revenue.
+	measure 'Gross Margin Rate' = DIVIDE([Gross Margin], [Net Revenue])
+		formatString: 0.0%
+		displayFolder: Sales
+		lineageTag: a3c86ed4-5516-4a5b-9612-a2c75113b3c6
+
+	/// Distinct completed orders in the current filter context.
+	measure 'Completed Orders' = CALCULATE(DISTINCTCOUNT(FactOrder[OrderKey]), FactOrder[OrderStatus] = "Completed")
+		formatString: #,##0
+		displayFolder: Sales
+		lineageTag: 96dcdc6c-00b8-48e9-b9fb-ddc3ababe290
+
+	/// Average net value per completed order.
+	measure 'Average Order Value' = DIVIDE([Net Revenue], [Completed Orders])
+		formatString: € #,##0.00
+		displayFolder: Sales
+		lineageTag: 6fac2f1a-2369-4552-b1b5-c1befbe3d5c8
+
+	/// Units sold on completed orders.
+	measure 'Units Sold' = CALCULATE(SUM(FactSalesLine[Quantity]), FactSalesLine[IsCompleted] = TRUE())
+		formatString: #,##0
+		displayFolder: Sales
+		lineageTag: e5cd443c-c1c9-4802-8a12-4efc6f2d39ae
+
+	/// Customers with at least one non-cancelled order.
+	measure 'Customers with Orders' =
+			```
+			COUNTROWS(
+				SUMMARIZE(
+					FILTER(FactOrder, FactOrder[OrderStatus] <> "Cancelled"),
+					FactOrder[CustomerKey]
+				)
+			)
+			```
+			formatString: #,##0
+			displayFolder: Customers
+		lineageTag: 506f7371-3624-4fde-b7b0-260aa66bd351
+
+	/// Customers with more than one non-cancelled order.
+	measure 'Repeat Customers' =
+			```
+			COUNTROWS(
+				FILTER(
+					SUMMARIZE(
+						FILTER(FactOrder, FactOrder[OrderStatus] <> "Cancelled"),
+						FactOrder[CustomerKey],
+						"OrderCount", DISTINCTCOUNT(FactOrder[OrderKey])
+					),
+					[OrderCount] > 1
+				)
+			)
+			```
+			formatString: #,##0
+			displayFolder: Customers
+		lineageTag: 3680571c-93a0-4b5d-8921-514ccbfbbea9
+
+	/// Share of active customers that placed more than one order.
+	measure 'Repeat Customer Rate' = DIVIDE([Repeat Customers], [Customers with Orders])
+		formatString: 0.0%
+		displayFolder: Customers
+		lineageTag: cdfc5d5b-7775-4e9b-b771-b963f8637dff
+
+	/// Completed orders delivered by the required date.
+	measure 'On-Time Delivered Orders' = CALCULATE(COUNTROWS(FactOrder), FactOrder[OrderStatus] = "Completed", FactOrder[IsOnTimeDelivery] = TRUE())
+		formatString: #,##0
+		displayFolder: Fulfillment
+		lineageTag: 2064ae13-594f-463a-815b-e810be33a45a
+
+	/// Share of completed orders delivered by the required date.
+	measure 'On-Time Delivery Rate' = DIVIDE([On-Time Delivered Orders], [Completed Orders])
+		formatString: 0.0%
+		displayFolder: Fulfillment
+		lineageTag: 146e9663-3aed-4fb4-bc35-1c2a2144dd11
+
+	/// Average elapsed days from order to delivery for completed orders.
+	measure 'Average Delivery Days' = CALCULATE(AVERAGE(FactOrder[DeliveryDays]), FactOrder[OrderStatus] = "Completed")
+		formatString: 0.0
+		displayFolder: Fulfillment
+		lineageTag: 678ace9b-7eb8-4e17-8ee9-dd7439527a05
+
+	/// Units in approved or received returns.
+	measure 'Accepted Return Units' = CALCULATE(SUM(FactReturn[ReturnQuantity]), FactReturn[IsAcceptedReturn] = TRUE())
+		formatString: #,##0
+		displayFolder: Returns
+		lineageTag: 2051ec4d-b3b4-46ea-aa18-ce882ee9e9df
+
+	/// Refund amount from approved or received returns.
+	measure 'Refund Amount' = CALCULATE(SUM(FactReturn[RefundAmount]), FactReturn[IsAcceptedReturn] = TRUE())
+		formatString: € #,##0.00
+		displayFolder: Returns
+		lineageTag: 74c19e81-a402-485b-bc0f-a8b183b661c4
+
+	/// Accepted returned units divided by units sold.
+	measure 'Return Rate' = DIVIDE([Accepted Return Units], [Units Sold])
+		formatString: 0.0%
+		displayFolder: Returns
+		lineageTag: d6360ffa-3366-4b4f-b189-a9fa34d94826
+
+	/// Current quantity on hand across the selected inventory positions.
+	measure 'Inventory On Hand' = SUM(FactInventorySnapshot[QuantityOnHand])
+		formatString: #,##0
+		displayFolder: Inventory
+		lineageTag: 2d38acb7-8872-4b8d-a0c9-400b9a5277d3
+
+	/// Reorder level across the selected inventory positions.
+	measure 'Reorder Level' = SUM(FactInventorySnapshot[ReorderLevel])
+		formatString: #,##0
+		displayFolder: Inventory
+		lineageTag: dde129ad-8e7a-45e6-9bed-8405de685b5c
+
+	/// Number of product and warehouse positions in the snapshot.
+	measure 'Inventory Positions' = COUNTROWS(FactInventorySnapshot)
+		formatString: #,##0
+		displayFolder: Inventory
+		lineageTag: f54dcbdd-1075-439e-8e69-c181e6c122ad
+
+	/// Inventory positions classified as reorder or out of stock.
+	measure 'Positions Below Reorder' = CALCULATE(COUNTROWS(FactInventorySnapshot), FactInventorySnapshot[StockStatus] IN {"Reorder", "OutOfStock"})
+		formatString: #,##0
+		displayFolder: Inventory
+		lineageTag: 0fc5f182-d986-4e46-b6b6-a1f16666125c
+
+	/// Net revenue for the same period one year earlier.
+	measure 'Prior Year Net Revenue' = CALCULATE([Net Revenue], SAMEPERIODLASTYEAR(DimDate[FullDate]))
+		formatString: € #,##0.00
+		displayFolder: Time Intelligence
+		lineageTag: cfcc5fa9-766b-41d4-8787-7ba1a0e6e4d1
+
+	/// Year-over-year change in net revenue.
+	measure 'Revenue YoY %' = DIVIDE([Net Revenue] - [Prior Year Net Revenue], [Prior Year Net Revenue])
+		formatString: 0.0%
+		displayFolder: Time Intelligence
+		lineageTag: 37db03b6-4191-4b89-8555-844c8130f22b
+
+	/// Completed orders for the same period one year earlier.
+	measure 'Prior Year Completed Orders' = CALCULATE([Completed Orders], SAMEPERIODLASTYEAR(DimDate[FullDate]))
+		formatString: #,##0
+		displayFolder: Time Intelligence
+		lineageTag: 93c5bcc3-9844-4eab-890a-cd994f20aa1b
+
+	/// Year-over-year change in completed orders.
+	measure 'Orders YoY %' = DIVIDE([Completed Orders] - [Prior Year Completed Orders], [Prior Year Completed Orders])
+		formatString: 0.0%
+		displayFolder: Time Intelligence
+		lineageTag: a0d75a34-840e-43a2-a1a6-ccb4551199da
+
+	/// Gross margin rate for the same period one year earlier.
+	measure 'Prior Year Gross Margin Rate' = CALCULATE([Gross Margin Rate], SAMEPERIODLASTYEAR(DimDate[FullDate]))
+		formatString: 0.0%
+		displayFolder: Time Intelligence
+		lineageTag: 56f4a531-e11f-48a8-87ed-0863e7d730e7
+
+	/// Year-over-year change in gross margin rate, expressed in percentage points.
+	measure 'Gross Margin Rate YoY pp' = ([Gross Margin Rate] - [Prior Year Gross Margin Rate]) * 100
+		formatString: 0.0
+		displayFolder: Time Intelligence
+		lineageTag: c719e729-8000-46cf-9f98-6bb48ba1605a
+
+	column Value
+		isHidden
+		formatString: 0
+		lineageTag: 52289359-7631-4396-b4c8-37d689d0e72a
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Value]
+
+	partition Metrics = calculated
+		mode: import
+		source = {1}
+

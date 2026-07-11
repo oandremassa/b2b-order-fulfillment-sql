@@ -1,0 +1,126 @@
+table DimDate
+	lineageTag: 4f1e5bd6-0f8f-477f-8987-09c615a74f9f
+	dataCategory: Time
+
+	column DateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7db734d7-5e97-4ead-be28-8f541d7210e4
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column FullDate
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: dba4e2ad-7c48-444c-a1de-71e4b98bf1c1
+		summarizeBy: none
+		sourceColumn: FullDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CalendarYear
+		dataType: int64
+		formatString: 0
+		lineageTag: 304a2fc7-12f1-4299-a6da-549e60b81650
+		summarizeBy: none
+		sourceColumn: CalendarYear
+
+	column CalendarQuarter
+		dataType: int64
+		formatString: 0
+		lineageTag: eefb9057-a14f-4d4c-a8b1-0b7893235783
+		summarizeBy: none
+		sourceColumn: CalendarQuarter
+
+	column QuarterLabel
+		dataType: string
+		lineageTag: c606845a-b42f-42b3-99ce-9a23316c739d
+		summarizeBy: none
+		sourceColumn: QuarterLabel
+
+	column MonthNumber
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8ee9e5d0-945e-4935-bb9f-3ae5df36baba
+		summarizeBy: none
+		sourceColumn: MonthNumber
+
+	column MonthName
+		dataType: string
+		lineageTag: 6e25b250-afc4-4a77-af63-ff52dc5a31a8
+		summarizeBy: none
+		sourceColumn: MonthName
+		sortByColumn: MonthNumber
+
+	column YearMonthNumber
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c5e01187-c412-49f9-9ff7-757c5926800b
+		summarizeBy: none
+		sourceColumn: YearMonthNumber
+
+	column YearMonthLabel
+		dataType: string
+		lineageTag: 5538367f-dd10-4793-b997-988834175bbc
+		summarizeBy: none
+		sourceColumn: YearMonthLabel
+		sortByColumn: YearMonthNumber
+
+	column DayOfMonth
+		dataType: int64
+		formatString: 0
+		lineageTag: 2db46828-82b6-4a85-89a3-36286de5d35a
+		summarizeBy: none
+		sourceColumn: DayOfMonth
+
+	column DayName
+		dataType: string
+		lineageTag: 19d9084f-dead-4d97-88bf-a02eef4cb23b
+		summarizeBy: none
+		sourceColumn: DayName
+
+	column IsWeekend
+		dataType: boolean
+		lineageTag: c23e0d06-ee10-447f-aaef-f9828ae66094
+		summarizeBy: none
+		sourceColumn: IsWeekend
+
+	hierarchy Calendar
+		lineageTag: ff8752d8-91f2-496d-9d54-463da4ad4d37
+
+		level Year
+			lineageTag: c04294c9-3c4d-459d-84df-55475c2b4c74
+			column: CalendarYear
+
+		level Quarter
+			lineageTag: 7303d719-ed1b-40ac-942e-b495b60eff3f
+			column: QuarterLabel
+
+		level Month
+			lineageTag: 0ecc1e15-565c-4d5a-b69b-78e9cd9e5e8b
+			column: YearMonthLabel
+
+		level Date
+			lineageTag: 863fc4c2-abd6-480f-9775-2f35cc74f592
+			column: FullDate
+
+	partition DimDate = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database("localhost", "B2BOrderAnalytics", [CreateNavigationProperties=false]),
+					Data = Source{[Schema="mart", Item="DimDate"]}[Data],
+					Formatted = Table.TransformColumns(
+						Data,
+						{{"YearMonthLabel", each Date.ToText(#date(Number.FromText(Text.Start(_, 4)), Number.FromText(Text.End(_, 2)), 1), "MMM yyyy", "en-US"), type text}}
+					),
+					ReportWindow = Table.SelectRows(
+						Formatted,
+						each [CalendarYear] >= 2024 and [CalendarYear] <= 2025
+					)
+				in
+					ReportWindow
+

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "B2BOrderAnalytics"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "5a917f20-3b82-47a4-95bd-9226c28d81f0"
+  }
+}

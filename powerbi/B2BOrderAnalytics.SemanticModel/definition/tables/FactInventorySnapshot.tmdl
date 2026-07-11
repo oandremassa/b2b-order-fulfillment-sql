@@ -1,0 +1,66 @@
+table FactInventorySnapshot
+	lineageTag: e71568c1-3453-417a-9471-fb5593d729d6
+
+	column SnapshotDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 9d3bd7e0-e19a-48c7-af5f-45224718db1b
+		summarizeBy: none
+		sourceColumn: SnapshotDateKey
+
+	column ProductKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: a32185ac-fb5e-41c3-9667-1fe689f876d8
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+	column WarehouseKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ce3f07c0-e41f-45f8-90fe-66a1eb947ebf
+		summarizeBy: none
+		sourceColumn: WarehouseKey
+
+	column QuantityOnHand
+		dataType: int64
+		formatString: #,##0
+		lineageTag: cb12b6b8-07d0-4c43-b192-56be19301ca7
+		summarizeBy: sum
+		sourceColumn: QuantityOnHand
+
+	column ReorderLevel
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 52c3c881-b5bc-440c-9c6a-64cb787e9efb
+		summarizeBy: sum
+		sourceColumn: ReorderLevel
+
+	column UnitsAboveReorderLevel
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 9b1a3936-595e-48d9-86b8-9b03890be424
+		summarizeBy: sum
+		sourceColumn: UnitsAboveReorderLevel
+
+	column StockStatus
+		dataType: string
+		lineageTag: 8a2495ae-53ee-4130-beae-75f1371728be
+		summarizeBy: none
+		sourceColumn: StockStatus
+
+	partition FactInventorySnapshot = m
+		mode: import
+		source =
+				Sql.Database(
+					"localhost",
+					"B2BOrderAnalytics",
+					[
+						Query = "SELECT SnapshotDateKey, ProductKey, WarehouseKey, QuantityOnHand, ReorderLevel, UnitsAboveReorderLevel, StockStatus FROM mart.FactInventorySnapshot;",
+						CreateNavigationProperties = false
+					]
+				)
+

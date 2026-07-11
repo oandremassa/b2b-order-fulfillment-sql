@@ -1,0 +1,59 @@
+table DimWarehouse
+	lineageTag: fca30b30-e1a0-4a5b-8768-f2d4920084b6
+
+	column WarehouseKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: aa842cd9-1d1a-40a4-9dc7-e1f9f010d073
+		summarizeBy: none
+		sourceColumn: WarehouseKey
+
+	column SourceWarehouseID
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 2e08c949-33fa-4238-9657-21808704cd79
+		summarizeBy: none
+		sourceColumn: SourceWarehouseID
+
+	column WarehouseCode
+		dataType: string
+		lineageTag: fa422722-55e3-4d9e-8dab-b4d8585a2494
+		summarizeBy: none
+		sourceColumn: WarehouseCode
+
+	column WarehouseName
+		dataType: string
+		lineageTag: 00e97c3d-c64d-461c-8dce-727fd52f352a
+		summarizeBy: none
+		sourceColumn: WarehouseName
+
+	column City
+		dataType: string
+		lineageTag: 5c4880d8-83ec-44e6-96bf-9b23040e98e2
+		summarizeBy: none
+		sourceColumn: City
+
+	column CountryCode
+		dataType: string
+		lineageTag: 9117a904-ee5c-40ed-a020-9e3716821d25
+		summarizeBy: none
+		sourceColumn: CountryCode
+
+	column IsActive
+		dataType: boolean
+		lineageTag: cddca8cc-2005-46dc-a322-c5b63a5ac3bb
+		summarizeBy: none
+		sourceColumn: IsActive
+
+	partition DimWarehouse = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database("localhost", "B2BOrderAnalytics", [CreateNavigationProperties=false]),
+					Data = Source{[Schema="mart", Item="DimWarehouse"]}[Data],
+					ShortNames = Table.TransformColumns(Data, {{"WarehouseName", each Text.BeforeDelimiter(_, " "), type text}})
+				in
+					ShortNames
+
